@@ -5,6 +5,7 @@ import { ShoppingCart } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import Layout from "@/components/layout/Layout";
 
+
 const Home = lazy(() => import("@/pages/Home"));
 const Products = lazy(() => import("@/pages/Products"));
 const ProductDetail = lazy(() => import("@/pages/ProductDetail"));
@@ -20,11 +21,7 @@ const Contact = lazy(() => import("@/pages/Contact"));
 const FAQ = lazy(() => import("@/pages/FAQ"));
 const Shipping = lazy(() => import("@/pages/Shipping"));
 
-const PageLoader = () => (
-  <div className="flex h-screen w-full items-center justify-center">
-    <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-  </div>
-);
+import { HomeSkeleton, ProductsSkeleton, ProductDetailSkeleton, CategoriesSkeleton } from "@/components/skeletons/PageSkeletons";
 
 function App() {
   const location = useLocation();
@@ -34,28 +31,46 @@ function App() {
   
   return (
     <div className="relative min-h-screen">
-      <Suspense fallback={<PageLoader />}>
-        <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<Home />} />
-              <Route path="products" element={<Products />} />
-              <Route path="products/:id" element={<ProductDetail />} />
-              <Route path="categories" element={<Categories />} />
-              <Route path="categories/:categoryId" element={<Category />} />
-              <Route path="about" element={<About />} />
-              <Route path="search" element={<Search />} />
-              <Route path="account" element={<Account />} />
-              <Route path="contact" element={<Contact />} />
-              <Route path="faq" element={<FAQ />} />
-              <Route path="shipping" element={<Shipping />} />
-              <Route path="cart" element={<Cart />} />
-              <Route path="checkout" element={<Checkout />} />
-              <Route path="*" element={<NotFound />} />
-            </Route>
-          </Routes>
-        </AnimatePresence>
-      </Suspense>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<Layout />}>
+            <Route index element={
+              <Suspense fallback={<HomeSkeleton />}>
+                <Home />
+              </Suspense>
+            } />
+            <Route path="products" element={
+              <Suspense fallback={<ProductsSkeleton />}>
+                <Products />
+              </Suspense>
+            } />
+            <Route path="products/:id" element={
+              <Suspense fallback={<ProductDetailSkeleton />}>
+                <ProductDetail />
+              </Suspense>
+            } />
+            <Route path="categories" element={
+              <Suspense fallback={<CategoriesSkeleton />}>
+                <Categories />
+              </Suspense>
+            } />
+            <Route path="categories/:categoryId" element={
+              <Suspense fallback={<ProductsSkeleton />}>
+                <Category />
+              </Suspense>
+            } />
+            <Route path="about" element={<Suspense><About /></Suspense>} />
+            <Route path="search" element={<Suspense><Search /></Suspense>} />
+            <Route path="account" element={<Suspense><Account /></Suspense>} />
+            <Route path="contact" element={<Suspense><Contact /></Suspense>} />
+            <Route path="faq" element={<Suspense><FAQ /></Suspense>} />
+            <Route path="shipping" element={<Suspense><Shipping /></Suspense>} />
+            <Route path="cart" element={<Suspense><Cart /></Suspense>} />
+            <Route path="checkout" element={<Suspense><Checkout /></Suspense>} />
+            <Route path="*" element={<Suspense><NotFound /></Suspense>} />
+          </Route>
+        </Routes>
+      </AnimatePresence>
 
       {/* Global Floating Action Cart - Outside transition context for mobile stability */}
       <AnimatePresence>
