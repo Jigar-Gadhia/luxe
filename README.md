@@ -14,9 +14,6 @@
 ### 🍏 iOS-Inspired "Peek & Pop" UI
 Experience 3D-touch-style interactions on the web. Hovering (or long-pressing on mobile) triggers a "Peek" state: the product card scales, gains a deep focal shadow, and subtly blurs the background to command full attention.
 
-### 🚁 Shared Element "Hero" Transitions
-Navigation feels weightless. Product images "fly" from their grid cards directly into their large hero positions on the detail page using synchronized `layoutId` animations, providing perfect spatial continuity.
-
 ### 🧪 Morphing Quantity Chips
 The interaction between discovery and shopping is fluid. Action buttons morph seamlessly into quantity controllers with spring-loaded physics, featuring vertical "slide-and-pop" animations for every count update.
 
@@ -56,7 +53,7 @@ LUXE. remembers you. The checkout flow is optimized with session-based prefill l
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/luxe-ecommerce.git
+   git clone https://github.com/Jigar-Gadhia/luxe.git
    ```
 2. Install dependencies:
    ```bash
