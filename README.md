@@ -9,6 +9,12 @@
 
 ---
 
+## 📸 Preview
+
+![LUXE. Boutique Experience](preview/luxe.gif)
+
+---
+
 ## ✨ High-End Interactive Features
 
 ### 🍏 iOS-Inspired "Peek & Pop" UI
