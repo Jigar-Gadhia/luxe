@@ -12,7 +12,9 @@
 ## 📸 Preview
 
 <p>
-  <a href="https://luxe-roan.vercel.app/" target="_blank">Visit Luxe</a>
+  <a href="https://luxe-roan.vercel.app/">
+    <img src="https://img.shields.io/badge/🚀%20Live%20Demo-Visit%20Luxe-black?style=for-the-badge&logo=vercel&logoColor=white" />
+  </a>
 </p>
 
 ![LUXE. Boutique Experience](preview/luxe.gif)
