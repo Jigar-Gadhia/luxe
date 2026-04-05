@@ -11,6 +11,10 @@
 
 ## 📸 Preview
 
+<p>
+  <a href="https://luxe-roan.vercel.app/" target="_blank">Visit Luxe</a>
+</p>
+
 ![LUXE. Boutique Experience](preview/luxe.gif)
 
 ---
