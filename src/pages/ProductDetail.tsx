@@ -5,16 +5,21 @@ import { useCartStore } from "@/store/cartStore";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ChevronLeft, Star, ShoppingCart, Check } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, Star, ShoppingCart, Check, Plus, Minus } from "lucide-react";
+import { m, AnimatePresence } from "framer-motion";
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: product, isLoading, isError } = useProduct(id);
-  const addItem = useCartStore((state: any) => state.addItem);
+  const addItem = useCartStore(state => state.addItem);
+  const removeItem = useCartStore(state => state.removeItem);
+  const updateQuantity = useCartStore(state => state.updateQuantity);
+  const itemCount = useCartStore(state =>
+    state.items.find((item) => item.id === (product?.id))?.quantity || 0
+  );
 
-  const [isAdded, setIsAdded] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
     if (isError) {
@@ -24,9 +29,25 @@ export default function ProductDetail() {
 
   const handleAddToCart = () => {
     if (product) {
+      setIsAdding(true);
       addItem(product);
-      setIsAdded(true);
-      setTimeout(() => setIsAdded(false), 2000);
+      setTimeout(() => setIsAdding(false), 600);
+    }
+  };
+
+  const handleIncrement = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (product) addItem(product);
+  };
+
+  const handleDecrement = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (product) {
+      if (itemCount === 1) {
+        removeItem(product.id);
+      } else {
+        updateQuantity(product.id, itemCount - 1);
+      }
     }
   };
 
@@ -55,7 +76,7 @@ export default function ProductDetail() {
       </Link>
 
       <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-start">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
@@ -66,9 +87,9 @@ export default function ProductDetail() {
             alt={product.title}
             className="w-full h-full object-contain rounded-[2.5rem]"
           />
-        </motion.div>
+        </m.div>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
@@ -94,38 +115,79 @@ export default function ProductDetail() {
           </div>
 
           <div className="flex flex-col gap-4 mt-4 border-t pt-8">
-            <Button
-              size="lg"
-              className="w-full h-14 text-base rounded-full shadow-lg transition-all"
-              onClick={handleAddToCart}
-              disabled={isAdded}
-            >
+            <div className="min-h-[56px] flex items-center justify-center">
               <AnimatePresence mode="wait">
-                {isAdded ? (
-                  <motion.div
-                    key="added"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="flex items-center gap-2"
+                {itemCount > 0 ? (
+                  <m.div
+                    key="quantity-controls"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    className="flex items-center justify-between w-full bg-black text-white h-14 rounded-full px-4 shadow-xl"
                   >
-                    <Check className="h-5 w-5" />
-                    Added to Cart
-                  </motion.div>
+                    <button
+                      onClick={handleDecrement}
+                      className="h-10 w-10 rounded-full hover:bg-white/20 flex items-center justify-center transition-colors"
+                      aria-label="Decrease quantity"
+                    >
+                      <Minus className="h-5 w-5" />
+                    </button>
+                    
+                    <div className="flex flex-col items-center justify-center">
+                      <AnimatePresence mode="popLayout">
+                        <m.span
+                          key={itemCount}
+                          initial={{ y: 10, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          exit={{ y: -10, opacity: 0 }}
+                          className="text-xl font-black"
+                        >
+                          {itemCount}
+                        </m.span>
+                      </AnimatePresence>
+                      <span className="text-[10px] uppercase font-bold tracking-widest opacity-50">In Cart</span>
+                    </div>
+
+                    <button
+                      onClick={handleIncrement}
+                      className="h-10 w-10 rounded-full hover:bg-white/20 flex items-center justify-center transition-colors"
+                      aria-label="Increase quantity"
+                    >
+                      <Plus className="h-5 w-5" />
+                    </button>
+                  </m.div>
                 ) : (
-                  <motion.div
-                    key="add"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="flex items-center gap-2"
+                  <Button
+                    size="lg"
+                    className="w-full h-14 text-base rounded-full shadow-lg transition-all active:scale-95 group uppercase tracking-widest font-black"
+                    onClick={handleAddToCart}
+                    disabled={isAdding}
                   >
-                    <ShoppingCart className="h-5 w-5" />
-                    Add to Cart
-                  </motion.div>
+                    {isAdding ? (
+                      <m.div
+                        key="adding"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="flex items-center gap-2"
+                      >
+                        <Check className="h-5 w-5" />
+                        Adding...
+                      </m.div>
+                    ) : (
+                      <m.div
+                        key="add-to-cart"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="flex items-center gap-2"
+                      >
+                        <ShoppingCart className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                        Add to Cart
+                      </m.div>
+                    )}
+                  </Button>
                 )}
               </AnimatePresence>
-            </Button>
+            </div>
 
             <div className="grid grid-cols-2 gap-4 text-sm text-center pt-4">
               <div className="p-4 bg-muted/30 rounded-xl">
@@ -138,7 +200,7 @@ export default function ProductDetail() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </div>
   );
