@@ -1,5 +1,5 @@
 import { Routes, Route, useLocation, Link } from "react-router-dom";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ShoppingCart } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
@@ -26,9 +26,15 @@ import { HomeSkeleton, ProductsSkeleton, ProductDetailSkeleton, CategoriesSkelet
 function App() {
   const location = useLocation();
   const { items } = useCartStore();
+  
+  // Global scroll to top on every route change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [location.pathname]);
+
   const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
   const isCartOrCheckout = location.pathname === "/cart" || location.pathname === "/checkout";
-  
+
   return (
     <div className="relative min-h-screen">
       <AnimatePresence mode="wait">
@@ -82,13 +88,13 @@ function App() {
             transition={{ type: "spring", stiffness: 400, damping: 30 }}
             className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-[9999]"
           >
-            <Link 
+            <Link
               to="/cart"
               className="flex items-center justify-center gap-3 bg-black text-white w-14 h-14 sm:w-auto sm:h-auto sm:px-6 sm:py-4 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.4)] hover:scale-105 active:scale-95 transition-transform group border border-white/10"
             >
               <div className="relative">
                 <ShoppingCart className="h-6 w-6" />
-                <motion.span 
+                <motion.span
                   key={cartCount}
                   initial={{ scale: 0.5, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}

@@ -82,6 +82,9 @@ export default function Checkout() {
     addOrder(newOrder);
     setIsSuccess(true);
     clearCart();
+    
+    // Reset scroll to top so user sees the confirmation message
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const validateForm = async () => {

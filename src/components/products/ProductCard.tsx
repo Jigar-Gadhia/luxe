@@ -1,18 +1,19 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Plus, Minus } from "lucide-react";
 import { useCartStore, type Product } from "@/store/cartStore";
 import { Link } from "react-router-dom";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo, useTransition } from "react";
 
 interface ProductCardProps {
   product: Product;
   index: number;
 }
 
-export function ProductCard({ product, index }: ProductCardProps) {
+export const ProductCard = memo(function ProductCard({ product, index }: ProductCardProps) {
   const [isPeeking, setIsPeeking] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const peekTimerRef = useRef<any>(null);
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -21,23 +22,31 @@ export function ProductCard({ product, index }: ProductCardProps) {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const { items, addItem, removeItem, updateQuantity } = useCartStore();
-  const itemCount = items.find((item) => item.id === product.id)?.quantity || 0;
+  const addItem = useCartStore(state => state.addItem);
+  const removeItem = useCartStore(state => state.removeItem);
+  const updateQuantity = useCartStore(state => state.updateQuantity);
+  const itemCount = useCartStore(state =>
+    state.items.find((item) => item.id === product.id)?.quantity || 0
+  );
 
   const handleIncrement = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addItem(product);
+    startTransition(() => {
+      addItem(product);
+    });
   };
 
   const handleDecrement = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (itemCount === 1) {
-      removeItem(product.id);
-    } else {
-      updateQuantity(product.id, itemCount - 1);
-    }
+    startTransition(() => {
+      if (itemCount === 1) {
+        removeItem(product.id);
+      } else {
+        updateQuantity(product.id, itemCount - 1);
+      }
+    });
   };
 
   const startPeek = () => {
@@ -59,7 +68,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
       {/* iOS Background Dimming Overlay - Desktop Only */}
       <AnimatePresence>
         {isPeeking && !isMobile && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -68,7 +77,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
         )}
       </AnimatePresence>
 
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 100, damping: 20, delay: Math.min(index * 0.05, 0.3) }}
@@ -77,14 +86,14 @@ export function ProductCard({ product, index }: ProductCardProps) {
         onTouchStart={startPeek}
         onTouchEnd={stopPeek}
         className={`group relative flex flex-col bg-white rounded-[1.5rem] sm:rounded-[2.5rem] p-1.5 sm:p-2 transition-all duration-500 cursor-pointer ${isPeeking && !isMobile ? "z-[101] shadow-[0_60px_100px_-20px_rgba(0,0,0,0.15)] scale-[1.04]" : "hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)]"
-          }`}
+          } ${isPending ? "opacity-80" : ""}`}
       >
         <Link
           to={`/products/${product.id}`}
           className="relative aspect-square w-full rounded-[1.2rem] sm:rounded-[2.1rem] overflow-hidden bg-zinc-50/80 group-hover:bg-zinc-100/50 transition-colors duration-700"
         >
           <div className="absolute inset-0 p-8 flex items-center justify-center">
-            <motion.img
+            <m.img
               src={product.image}
               alt={product.title}
               className="w-full h-full object-contain mix-blend-multiply drop-shadow-xl rounded-[2rem]"
@@ -97,7 +106,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
           {/* Quick Action Chip (Bottom) */}
           <AnimatePresence>
             {(isPeeking || itemCount > 0 || isMobile) && (
-              <motion.div
+              <m.div
                 layout
                 initial={{ opacity: 0, y: 10, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -109,7 +118,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
                 <div className="bg-black text-white rounded-full min-h-[44px] shadow-2xl border border-white/10 overflow-hidden">
                   <AnimatePresence mode="wait">
                     {itemCount > 0 ? (
-                      <motion.div
+                      <m.div
                         key="controls"
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -119,7 +128,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
                         <button onClick={handleDecrement} className="h-8 w-8 rounded-full hover:bg-white/20 flex items-center justify-center transition-colors"><Minus className="h-4 w-4" /></button>
                         <div className="w-10 flex justify-center overflow-hidden">
                           <AnimatePresence mode="popLayout">
-                            <motion.span
+                            <m.span
                               key={itemCount}
                               initial={{ y: 15, opacity: 0 }}
                               animate={{ y: 0, opacity: 1 }}
@@ -127,13 +136,13 @@ export function ProductCard({ product, index }: ProductCardProps) {
                               className="font-black text-xs block"
                             >
                               {itemCount}
-                            </motion.span>
+                            </m.span>
                           </AnimatePresence>
                         </div>
                         <button onClick={handleIncrement} className="h-8 w-8 rounded-full hover:bg-white/20 flex items-center justify-center transition-colors"><Plus className="h-4 w-4" /></button>
-                      </motion.div>
+                      </m.div>
                     ) : (
-                      <motion.button
+                      <m.button
                         key="add-btn"
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -142,11 +151,11 @@ export function ProductCard({ product, index }: ProductCardProps) {
                         className="px-4 sm:px-8 h-11 font-black text-[10px] sm:text-[11px] uppercase tracking-widest whitespace-nowrap"
                       >
                         Quick Add
-                      </motion.button>
+                      </m.button>
                     )}
                   </AnimatePresence>
                 </div>
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
 
@@ -188,7 +197,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
           </div>
 
         </div>
-      </motion.div>
+      </m.div>
     </>
   );
-}
+});

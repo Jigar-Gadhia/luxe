@@ -1,11 +1,13 @@
 import { Link, NavLink } from "react-router-dom";
 import { ShoppingCart, Search, User } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
+import { memo } from "react";
 
-export default function Navbar() {
-  const cartItems = useCartStore((state) => state.items);
-  const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+const Navbar = memo(function Navbar() {
+  const cartCount = useCartStore((state) => 
+    state.items.reduce((acc, item) => acc + item.quantity, 0)
+  );
 
   return (
     <header className="sticky top-0 z-50 w-full border-b backdrop-blur-md bg-background/80 supports-[backdrop-filter]:bg-background/60">
@@ -64,13 +66,13 @@ export default function Navbar() {
           >
             <ShoppingCart className="h-5 w-5" />
             {cartCount > 0 && (
-              <motion.span
+              <m.span
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground"
               >
                 {cartCount}
-              </motion.span>
+              </m.span>
             )}
             <span className="sr-only">Cart</span>
           </Link>
@@ -78,4 +80,6 @@ export default function Navbar() {
       </div>
     </header>
   );
-}
+});
+
+export default Navbar;

@@ -1,5 +1,6 @@
 import { useProducts } from "@/hooks/useProducts";
 import { Link, useParams } from "react-router-dom";
+import { useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProductCard } from "@/components/products/ProductCard";
 
@@ -11,8 +12,9 @@ export default function Category() {
   const decodedCategory = decodeURIComponent(categoryId || "");
   
   // Filter products by category (case-insensitive substring match to handle variations)
-  const filteredProducts = products.filter(
-    (p) => p.category.toLowerCase().includes(decodedCategory.toLowerCase())
+  const filteredProducts = useMemo(() => 
+    products.filter((p) => p.category.toLowerCase().includes(decodedCategory.toLowerCase())),
+    [products, decodedCategory]
   );
 
   return (
