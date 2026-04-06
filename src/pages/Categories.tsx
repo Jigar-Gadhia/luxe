@@ -1,14 +1,9 @@
-import { useEffect } from "react";
+import { useProducts } from "@/hooks/useProducts";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useProductStore } from "@/store/productStore";
 
 export default function Categories() {
-  const { products, fetchProducts, isLoading } = useProductStore();
-
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+  const { data: products = [], isLoading } = useProducts(100);
 
   const categories = Array.from(new Set(products.map((p) => p.category)));
 

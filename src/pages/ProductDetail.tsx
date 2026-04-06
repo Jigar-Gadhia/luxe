@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { useProductStore } from "@/store/productStore";
+import { useProduct } from "@/hooks/useProducts";
 import { useCartStore } from "@/store/cartStore";
-import type { Product } from "@/store/cartStore";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,20 +11,16 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { fetchProductById, isLoading } = useProductStore();
+  const { data: product, isLoading, isError } = useProduct(id);
   const addItem = useCartStore((state: any) => state.addItem);
 
-  const [product, setProduct] = useState<Product | null>(null);
   const [isAdded, setIsAdded] = useState(false);
 
   useEffect(() => {
-    if (id) {
-      fetchProductById(Number(id)).then((data: any) => {
-        if (data) setProduct(data);
-        else navigate("/404", { replace: true });
-      });
+    if (isError) {
+      navigate("/404", { replace: true });
     }
-  }, [id, fetchProductById, navigate]);
+  }, [isError, navigate]);
 
   const handleAddToCart = () => {
     if (product) {

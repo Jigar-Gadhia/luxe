@@ -76,12 +76,12 @@ export function ProductCard({ product, index }: ProductCardProps) {
         onMouseLeave={stopPeek}
         onTouchStart={startPeek}
         onTouchEnd={stopPeek}
-        className={`group relative flex flex-col bg-white rounded-[2.5rem] p-2 transition-all duration-500 cursor-pointer ${isPeeking && !isMobile ? "z-[101] shadow-[0_60px_100px_-20px_rgba(0,0,0,0.15)] scale-[1.04]" : "hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)]"
+        className={`group relative flex flex-col bg-white rounded-[1.5rem] sm:rounded-[2.5rem] p-1.5 sm:p-2 transition-all duration-500 cursor-pointer ${isPeeking && !isMobile ? "z-[101] shadow-[0_60px_100px_-20px_rgba(0,0,0,0.15)] scale-[1.04]" : "hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)]"
           }`}
       >
         <Link
           to={`/products/${product.id}`}
-          className="relative aspect-square w-full rounded-[2.1rem] overflow-hidden bg-zinc-50/80 group-hover:bg-zinc-100/50 transition-colors duration-700"
+          className="relative aspect-square w-full rounded-[1.2rem] sm:rounded-[2.1rem] overflow-hidden bg-zinc-50/80 group-hover:bg-zinc-100/50 transition-colors duration-700"
         >
           <div className="absolute inset-0 p-8 flex items-center justify-center">
             <motion.img
@@ -103,7 +103,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                className="absolute inset-x-4 bottom-4 z-50 flex justify-center"
+                className="absolute inset-x-2 sm:inset-x-4 bottom-3 sm:bottom-4 z-50 flex justify-center"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="bg-black text-white rounded-full min-h-[44px] shadow-2xl border border-white/10 overflow-hidden">
@@ -139,7 +139,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.8 }}
                         onClick={handleIncrement}
-                        className="px-8 h-11 font-black text-[11px] uppercase tracking-widest whitespace-nowrap"
+                        className="px-4 sm:px-8 h-11 font-black text-[10px] sm:text-[11px] uppercase tracking-widest whitespace-nowrap"
                       >
                         Quick Add
                       </motion.button>
@@ -159,7 +159,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
           </div>
         </Link>
 
-        <div className="px-5 pt-5 pb-5 space-y-2">
+        <div className="px-3 sm:px-5 pt-3 sm:pt-5 pb-4 sm:pb-5 space-y-1 sm:space-y-2">
           <div className="flex items-center justify-between">
             <p className="text-[10px] text-zinc-400 font-black uppercase tracking-[0.25em]">
               {product.category}
@@ -174,14 +174,14 @@ export function ProductCard({ product, index }: ProductCardProps) {
             </div>
           </div>
 
-          <h3 className="font-extrabold text-lg leading-[1.25] tracking-tight text-zinc-900 group-hover:text-primary transition-colors duration-300">
-            <Link to={`/products/${product.id}`} className="block line-clamp-2 min-h-[48px]">
+          <h3 className="font-extrabold text-sm sm:text-lg leading-[1.2] sm:leading-[1.25] tracking-tight text-zinc-900 group-hover:text-primary transition-colors duration-300">
+            <Link to={`/products/${product.id}`} className="block line-clamp-2 min-h-[34px] sm:min-h-[48px]">
               {product.title}
             </Link>
           </h3>
 
           <div className="flex items-center gap-3 pt-1">
-            <p className="text-2xl font-black tracking-tighter text-black">${product.price.toFixed(2)}</p>
+            <p className="text-lg sm:text-2xl font-black tracking-tighter text-black">${product.price.toFixed(2)}</p>
             {product.price > 100 && (
               <p className="text-[10px] text-zinc-400 font-bold italic line-through opacity-50">${(product.price * 1.2).toFixed(2)}</p>
             )}

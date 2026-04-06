@@ -28,10 +28,10 @@ export const HomeSkeleton = () => (
         <Skeleton className="h-4 w-24 rounded-lg hidden sm:block" />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
         {Array(4).fill(0).map((_, i) => (
           <div key={i} className="flex flex-col gap-4">
-            <Skeleton className="aspect-square rounded-[2rem] w-full" />
+            <Skeleton className="aspect-square rounded-[1.2rem] sm:rounded-[2rem] w-full" />
             <div className="space-y-2">
               <Skeleton className="h-4 w-2/3" />
               <Skeleton className="h-4 w-1/4" />
@@ -50,11 +50,11 @@ export const ProductsSkeleton = () => (
       <Skeleton className="h-4 w-96 rounded-lg" />
     </div>
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
+    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10">
       {Array(8).fill(0).map((_, i) => (
         <div key={i} className="flex flex-col gap-4">
-          <Skeleton className="aspect-square rounded-[2.5rem] w-full" />
-          <div className="space-y-2 p-2">
+          <Skeleton className="aspect-square rounded-[1.2rem] sm:rounded-[2.5rem] w-full" />
+          <div className="space-y-2 p-1.5 sm:p-2">
             <Skeleton className="h-4 w-full" />
             <Skeleton className="h-4 w-1/4" />
           </div>

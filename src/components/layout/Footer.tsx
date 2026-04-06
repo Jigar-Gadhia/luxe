@@ -1,13 +1,8 @@
+import { useProducts } from "@/hooks/useProducts";
 import { Link } from "react-router-dom";
-import { useProductStore } from "@/store/productStore";
-import { useEffect } from "react";
 
 export default function Footer() {
-  const { products, fetchProducts } = useProductStore();
-
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+  const { data: products = [] } = useProducts(20);
 
   // Get unique categories (take up to 4 so it fits well in the footer)
   const categories = Array.from(new Set(products.map((p) => p.category))).slice(0, 4);

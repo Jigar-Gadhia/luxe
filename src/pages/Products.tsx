@@ -1,14 +1,9 @@
-import { useEffect } from "react";
-import { useProductStore } from "@/store/productStore";
+import { useProducts } from "@/hooks/useProducts";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProductCard } from "@/components/products/ProductCard";
 
 export default function Products() {
-  const { products, fetchProducts, isLoading } = useProductStore();
-
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+  const { data: products = [], isLoading } = useProducts(24);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -19,7 +14,7 @@ export default function Products() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10">
         {isLoading && products.length === 0 ? (
           Array(8).fill(0).map((_, i) => (
             <div key={i} className="flex flex-col gap-4">

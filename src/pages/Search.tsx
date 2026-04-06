@@ -1,20 +1,15 @@
 import { useState, useEffect } from "react";
+import { useProducts } from "@/hooks/useProducts";
 import { motion } from "framer-motion";
 import { Search as SearchIcon } from "lucide-react";
-import { useProductStore } from "@/store/productStore";
 import Fuse from "fuse.js";
 import { Skeleton } from "@/components/ui/skeleton";
-
 import { ProductCard } from "@/components/products/ProductCard";
 
 export default function Search() {
   const [query, setQuery] = useState("");
-  const { products, fetchProducts, isLoading } = useProductStore();
+  const { data: products = [], isLoading } = useProducts(100);
   const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
-
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
 
   useEffect(() => {
     if (query.trim() === "") {
@@ -54,7 +49,7 @@ export default function Search() {
         </div>
 
         {isLoading && query.trim() !== "" && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pt-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 pt-8">
             {Array(4).fill(0).map((_, i) => (
               <div key={i} className="flex flex-col gap-4">
                 <Skeleton className="aspect-square rounded-2xl w-full" />
@@ -84,7 +79,7 @@ export default function Search() {
         {!isLoading && filteredProducts.length > 0 && (
           <div className="space-y-6 pt-8">
              <h2 className="text-xl font-semibold border-b pb-2">Results ({filteredProducts.length})</h2>
-             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
+             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10">
               {filteredProducts.map((product: any, index: number) => (
                 <ProductCard key={product.id} product={product} index={index} />
               ))}

@@ -1,16 +1,11 @@
-import { useEffect } from "react";
+import { useProducts } from "@/hooks/useProducts";
 import { Link, useParams } from "react-router-dom";
-import { useProductStore } from "@/store/productStore";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProductCard } from "@/components/products/ProductCard";
 
 export default function Category() {
   const { categoryId } = useParams<{ categoryId: string }>();
-  const { products, fetchProducts, isLoading } = useProductStore();
-
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+  const { data: products = [], isLoading } = useProducts(100);
 
   // Handle case sensitivity/URL encoding
   const decodedCategory = decodeURIComponent(categoryId || "");
@@ -27,7 +22,7 @@ export default function Category() {
         <p className="text-muted-foreground mt-2">Explore products in this category.</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 sm:gap-x-6 gap-y-10">
         {isLoading && products.length === 0 ? (
           Array(8).fill(0).map((_, i) => (
             <div key={i} className="flex flex-col gap-4">

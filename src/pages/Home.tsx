@@ -1,17 +1,12 @@
-import { useEffect } from "react";
+import { useProducts } from "@/hooks/useProducts";
 import { Link } from "react-router-dom";
-import { useProductStore } from "@/store/productStore";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { ProductCard } from "@/components/products/ProductCard";
 
 export default function Home() {
-  const { products, fetchProducts, isLoading } = useProductStore();
-
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+  const { data: products = [], isLoading } = useProducts(24);
 
   const featuredProducts = products.slice(0, 4);
 
@@ -63,7 +58,7 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
           {isLoading && products.length === 0 ? (
             Array(4).fill(0).map((_, i) => (
               <div key={i} className="flex flex-col gap-4">
